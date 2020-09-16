@@ -3,7 +3,6 @@ getwd()
 setwd("/Users/rociozhong/Library/Mobile Documents/com~apple~CloudDocs/PS549_2015/final_paper/voting")
 
 data_2 <- read.csv("final_dta.csv", header = T, sep = ",")
-
 dta<- read.table("Economic.txt", header=T, sep="\t")
 names(dta)
 
@@ -14,7 +13,6 @@ attach(dta)
 newdta<- dta[complete.cases(dta),]
 #finaldta<- as.matrix(sapply(newdta[,-c(1:3)], as.numeric)) 
 #table_1<- cor(finaldta)
-
 
 ## graph of 4 economic indices ##
 library(ggplot2)
@@ -29,8 +27,6 @@ plot_econ <- ggplot(data = data_2, aes(x = datem)) +
   geom_line(aes(y = hp_cb_Leadrevised, colour = "Leading_revised")) +
   labs(x = "Year", y = "Conference Board Indicators") + 
   scale_x_date(labels = date_format("%m-%Y")) 
-
-
 
 ## graph of tone ##                    
 plot_tone1 <- ggplot(data = newdta, aes(x = datem, y = tone1)) +
@@ -61,7 +57,6 @@ summary(fit_unemploy) ## positive correlation between unemployment rate and demo
 library(stargazer)
 stargazer(fit_coincidient, fit_lag, fit_lead_re, fit_unemploy, title = "results")
 
-
 ## Given partisanship and economic performance, the media response ##
 fit_par_lag <- lm(tone1 ~ hp_cblagus + unemB + party_id, data = data_2)
 summary(fit_par_lag) ## Rep has 0.23024 less tone than Dem ##
@@ -74,15 +69,12 @@ summary(fit_lagparty)
 fit_coinparty <- lm(tone1 ~ hp_cbcoinus * party_id, data = data_2)
 summary(fit_coinparty)
 
-
 fit3_lagparty <- lm(tone3 ~ hp_cblagus* party_id, data = data_2)
 summary(fit3_lagparty)
 
 ############
 fit_par_coin <- lm(tone1 ~ hp_cbcoinus + unemB + party_id, data= data_2)
 summary(fit_par_coin) ## Rep has 0.23053 less tone than Dem ##
-
-
 
 ## making table ##
 stargazer(fit_lagparty, fit_coinparty, rec_lagparty, rec_coinparty,
@@ -91,11 +83,9 @@ stargazer(fit_lagparty, fit_coinparty, rec_lagparty, rec_coinparty,
           covariate.labels=c("Lag","Coin","Republican", "Interaction: Rep*Lag/Coin"), 
           omit.stat = c("ser", "adj.rsq"), no.space=TRUE)
           
-
 ##  recession count versus party id ##
 rec_par_lag <- lm(recession ~ hp_cblagus + unemB + party_id, data = data_2)
 summary(rec_par_lag) ## recession word count -- Rep has 64.632 more than Dem ##
-
 
 ## interaction of econ and party ##
 rec_lagparty <- lm(recession ~ hp_cblagus*party_id, data = data_2)
@@ -110,7 +100,6 @@ summary(rec_par_coin) ## Rep has 61.433 recession words than Dem ##
 ## general negative versus party id ##
 neg_par_lag <- lm(generalnegative ~ hp_cblagus + unemB + party_id, data = data_2)
 summary(neg_par_lag) ## Rep has 108.150 more than Dem regarding general negative ##
-
 
 neg_par_coin <- lm(generalnegative ~ hp_cbcoinus + unemB + party_id, data = data_2)
 summary(neg_par_coin) ## Rep has 103.878 more than Dem ##
@@ -131,7 +120,6 @@ stargazer(neg_par_lag, neg_par_coin, poly_neg, title = "results",
 
 
 ## negative versus economic performance for two parties ##
-
 plot_neg <- ggplot(data = data_2, aes(x = hp_cbcoinus, y = generalnegative, color = factor(party_id))) + 
   stat_smooth(method = "lm", size = 1) + geom_point() +
   labs(x = "Coincident Indices", y = "General Negative from Media") 
@@ -150,13 +138,10 @@ fig3<- ggplot(data_2, aes(x = datem, y = hp_cb_Leadrevised)) +
   labs(x = "Year") + scale_colour_continuous(guide = FALSE) +
   theme(axis.title.y=element_blank())
 
-
 fig2<- ggplot(data_2, aes(x = datem, y = generalnegative, group = 1, color = colors)) + 
  geom_line() + scale_x_date(labels = date_format("%m-%Y")) +
   labs(x = "Year", y = "Media Tone") + theme_bw() %+replace% 
   theme(panel.background = element_rect(fill = NA)) + scale_colour_continuous(guide = FALSE) 
-
-
 
 fig4<- ggplot(data_2, aes(x = datem, y = count)) + 
   geom_line(colour = "red") + scale_x_date(labels = date_format("%m-%Y")) +
@@ -168,7 +153,6 @@ fig5 <- ggplot(data_2, aes(x = datem, y = socretro)) +
   geom_line(colour = "blue") + scale_x_date(labels = date_format("%m-%Y")) +
   labs(x = "Year", y = "Retros Evaluation") + theme_bw() %+replace% 
   theme(panel.background = element_rect(fill = NA)) + scale_colour_continuous(guide = FALSE) 
-
 
 ## dual axis ##
 library(gtable)
@@ -182,9 +166,7 @@ g2 <- ggplot_gtable(ggplot_build(fig2))
 pp <- c(subset(g1$layout, name == "panel", se = t:r))
 g <- gtable_add_grob(g1, g2$grobs[[which(g2$layout$name == "panel")]], pp$t, 
                      pp$l, pp$b, pp$l)
-
 ## axis tweaks ##
-
 ia <- which(g2$layout$name == "axis-l")
 ga <- g2$grobs[[ia]]
 ax <- ga$children[[2]]
@@ -213,13 +195,9 @@ plot_senti <- ggplot(data_2, aes(x = datem)) +
 ## social class sentiment, employment and partisanship ##
 ## lower class are much more sensitive to umemployment rate ##
 ## lower and middle class are likely to support democratic compared to upper class ##
-
 ## umempolyment versus party ##
-
-
 up_em <- lm(Upper.Third ~ party_id * unemB, data = data_2)
 summary(up_em)
-
 
 mi_em <- lm(Middle.Third ~ party_id *unemB , data = data_2)
 summary(mi_em)
@@ -228,7 +206,6 @@ low_em <- lm(Lower.Third ~ party_id *unemB , data = data_2)
 summary(low_em)
 
 ## sentiment versus  partisanship ##
-
 fit_senti_par <- lm(socretro ~ party_id, data = data_2)
 summary(fit_senti_par)
 
@@ -243,7 +220,6 @@ fit_low_par <- lm(Lower.Third ~ party_id *hp_cb_Leadrevised , data = data_2)
 summary(fit_low_par)
 
 ## sentiment versus media and party ##
-
 up_par_media <- lm(Upper.Third ~ party_id * recession + unemB * party_id, data = data_2)
 summary(up_par_media)
 
@@ -253,10 +229,8 @@ summary(mi_par_media)
 low_par_media <- lm(Lower.Third ~ party_id * recession + unemB * party_id, data = data_2)
 summary(low_par_media)
 
-## 
 
 ## making tables ##
-
 stargazer(fit_high_par, fit_mid_par, fit_low_par, 
           title = "Public Opinion by Social Class to the Economy and Partisanship",
           dep.var.labels= c("Upper Class", "Middle Class", "Lower Class"), 
@@ -266,10 +240,7 @@ stargazer(fit_high_par, fit_mid_par, fit_low_par,
 ######### making tables ##############
 install.packages("stargazer")
 library(stargazer)
-
-
 stargazer(data_2)
-
 stargazer(coll)
 
 
@@ -326,7 +297,6 @@ summary(df_socprosp)
 
 ############## cointegration: Engle- Granger test ##############
 ## lagging and tone are not cointegrated ##
-
 Engle <- lm(socretro ~ leading)
 summary(Engle)
 
@@ -339,7 +309,6 @@ ts.plot(residual)
 
 library(tseries)
 adf.test(residual, k = 1)
-
 # socretro ~ leading: cointegration at 0.05, but pvalue  = 0.04782 too close to 0.05, 
 # possible no cointegration #
 # socretro ~ coincident: no cointegration #
@@ -363,8 +332,6 @@ adf.test(residual, k = 1)
 
 ############## ECMS ###############
 #order data by year, month
-
-
 install.packages("zoo")
 library(zoo)
 mydata <- zoo(data_2[order(data_2$year, data_2$month), ])
@@ -378,16 +345,11 @@ unem_lag1 <- as.numeric(lag(mydata$unemB, -1, na.pad = TRUE))
 
 ## revised lead indice ##
 re_lead_lag1 <- as.numeric(lag(mydata$hp_cb_Leadrevised, -1, na.pad = TRUE))
-
 retro_lag1 <- as.numeric(lag(mydata$socretro, -1, na.pad = TRUE))
 prosp_lag1 <- as.numeric(lag(mydata$socprosp, -1, na.pad = TRUE))
-
 up_lag1 <- as.numeric(lag(mydata$Upper.Third, -1, na.pad = TRUE))
-
 mi_lag1 <- as.numeric(lag(mydata$Middle.Third, -1, na.pad = TRUE))
 low_lag1 <- as.numeric(lag(mydata$Lower.Third, -1, na.pad = TRUE))
-
-
 
 count_diff1 <- as.numeric(mydata$count) - count_lag1
 tone1_diff1 <- as.numeric(mydata$tone1) - tone1_lag1
@@ -397,18 +359,13 @@ coin_diff1 <- as.numeric(mydata$hp_cbcoinus) - coin_lag1
 lead_diff1 <- as.numeric(mydata$hp_cbleadus) - lead_lag1
 unem_diff1 <- as.numeric(mydata$unemB) - unem_lag1
 
-
 ## revised lead first different ##
 re_lead_diff1 <- as.numeric(mydata$hp_cb_Leadrevised) - re_lead_lag1
-
 retro_diff1 <- as.numeric(mydata$socretro) - retro_lag1
 prosp_diff1 <- as.numeric(mydata$socprosp) - prosp_lag1
-
-
 up_diff1 <- as.numeric(mydata$Upper.Third) - up_lag1
 mi_diff1 <- as.numeric(mydata$Middle.Third) - mi_lag1
 low_diff1 <- as.numeric(mydata$Lower.Third) - low_lag1
-
 additional <- data.frame(cbind(count_lag1, tone1_lag1, tone3_lag1, lag_lag1, coin_lag1, lead_lag1, re_lead_lag1,
                                retro_lag1, prosp_lag1, count_diff1, tone1_diff1, tone3_diff1, lag_diff1, coin_diff1, 
                                lead_diff1, re_lead_diff1, retro_diff1, prosp_diff1, up_lag1, mi_lag1, low_lag1,
@@ -419,20 +376,15 @@ mydata1 <- lapply(cbind(data.frame(mydata), additional)[-1,], as.numeric)
 fit_count_lag <- lm(count_diff1 ~ count_lag1 + lag_diff1 + lag_lag1, data = mydata1)
 summary(fit_count_lag)
 
-
 ## add party_id into column 1##
 fit_count_lagparty <- lm(count_diff1 ~ count_lag1 + lag_diff1 + lag_lag1 + factor(party_id), data = mydata1)
 summary(fit_count_lagparty)
-
-
 
 ## soroka table 2 column 2 ##
 fit_count_coin <- lm(count_diff1 ~ count_lag1 + coin_diff1 + coin_lag1, data = mydata1)
 summary(fit_count_coin)
 
-
 ## add party_id  in col2 ##
-
 fit_count_coinparty <- lm(count_diff1 ~ count_lag1 + coin_diff1 + coin_lag1 + factor(party_id), data = mydata1)
 summary(fit_count_coinparty)
 
@@ -440,13 +392,11 @@ summary(fit_count_coinparty)
 fit_count_lead <- lm(count_diff1 ~ count_lag1 + lead_diff1 + lead_lag1, data = mydata1)
 summary(fit_count_lead)
 
-
 ## soroka table 2 column 3, revised lead ##
 fit_count_relead <- lm(count_diff1 ~ count_lag1 + re_lead_diff1 + re_lead_lag1, data = mydata1)
 summary(fit_count_relead)
 
 ## add party_id in col3 revised ##
-
 fit_count_releadparty <- lm(count_diff1 ~ count_lag1 + re_lead_diff1 + re_lead_lag1 + factor(party_id), data = mydata1)
 summary(fit_count_releadparty)
 
@@ -469,18 +419,15 @@ fit_tone1_relead <- lm(tone1_diff1 ~ tone1_lag1 + re_lead_diff1 + re_lead_lag1, 
 summary(fit_tone1_relead)
 
 ## add party into col6 ##
-
 fit_tone1_releadparty <- lm(tone1_diff1 ~ tone1_lag1 + re_lead_diff1 + re_lead_lag1 + factor(party_id), data = mydata1)
 summary(fit_tone1_releadparty)
 
 ## table 3 column 1 -3 ##
 fit_count_lagcoin <- lm(count_diff1 ~ count_lag1 + lag_diff1 + lag_lag1 + coin_diff1 + coin_lag1, data = mydata1)
 summary(fit_count_lagcoin)
-
 fit_count_coinrelead <- lm(count_diff1 ~ count_lag1 + coin_diff1 + coin_lag1 + 
                              re_lead_diff1 + re_lead_lag1, data = mydata1)
 summary(fit_count_coinrelead)
-
 
 fit_count_lagcoinrelead <- lm(count_diff1 ~ count_lag1 + lag_diff1 + lag_lag1 + coin_diff1 + coin_lag1 + 
                              re_lead_diff1 + re_lead_lag1, data = mydata1)
@@ -489,7 +436,6 @@ summary(fit_count_lagcoinrelead)
 ## table 3 column 4 - 6 ##
 fit_tone1_lagcoin <- lm(tone1_diff1 ~ tone1_lag1 + lag_diff1 + lag_lag1 + coin_diff1 + coin_lag1, data = mydata1)
 summary(fit_tone1_lagcoin)
-
 
 fit_tone1_coinrelead <- lm(tone1_diff1 ~ tone1_lag1 + coin_diff1 + coin_lag1 + 
                                 re_lead_diff1 + re_lead_lag1, data = mydata1)
@@ -556,22 +502,16 @@ fit_retro_wo_int_low <- lm(low_diff1 ~ low_lag1 + re_lead_diff1 + re_lead_lag1 +
 summary(fit_retro_wo_int_low)
 
 
-
-
 ## table 7 column 3-4 ##
-
 fit_pro_wo_int <- lm(prosp_diff1 ~ prosp_lag1 + re_lead_diff1 + re_lead_lag1 + count_diff1 + count_lag1 + 
                          tone1_diff1 + tone1_lag1, data = mydata1)
 summary(fit_pro_wo_int)
-
-
 
 fit_pro_wt_int <- lm(prosp_diff1 ~ prosp_lag1 + re_lead_diff1 + re_lead_lag1 + count_diff1 + count_lag1 + 
                        tone1_diff1 + tone1_lag1 + int_count_tone1lag1, data = mydata1)
 summary(fit_pro_wt_int)
 
 ## social class versus party by controlliing lag ##
-
 up_party_econ<- lm(up_diff1 ~ up_lag1 + unem_diff1 + unem_lag1 +factor(party_id), data = mydata1)
 summary(up_party_econ)
 
@@ -580,7 +520,6 @@ summary(mi_party_econ)
 
 low_party_econ<- lm(low_diff1 ~ low_lag1 + unem_diff1 + unem_lag1 +factor(party_id), data = mydata1)
 summary(low_party_econ)
-
 
 ## making table ##
 stargazer(up_party_econ, mi_party_econ, low_party_econ, 
@@ -592,16 +531,12 @@ stargazer(up_party_econ, mi_party_econ, low_party_econ,
 ######### making tables in latex ############
 
 ## soroka table 2 ##
-
 stargazer(fit_count_lag, fit_count_coin, fit_count_relead, 
           title="Responsiveness of Media to Lagging, Coincident, and Leading Indicators",
           dep.var.labels="Change in Count(t)", 
           covariate.labels=c("DV(t-1)","Change in lag","Lag(t-1)", "Change in Coin", "Coin(t-1)",
                              "Change in lead", "Lead(t-1)"), omit.stat = c("ser", "adj.rsq"), no.space=TRUE)
                                                                   
-
-
-
 stargazer(fit_tone1_lag, fit_tone1_coin, fit_tone1_relead,
           title="Responsiveness of Media(tone) to Lagging, Coincident, and Leading Indicators",
           dep.var.labels="Change in Tone1(t)",
@@ -615,14 +550,11 @@ stargazer(fit_tone1_lagparty, fit_tone1_coinparty, fit_tone1_releadparty,
                              "Change in lead", "Lead(t-1)", "Republican"), omit.stat = c("ser", "adj.rsq"), no.space=TRUE)
 
 
-
 stargazer(fit_count_lagcoin, fit_count_coinrelead, fit_count_lagcoinrelead, 
           title="Responsiveness of Media (volume) to Lagging, Coincident, and Leading Indicators",
           dep.var.labels="Change in Count(t)", 
           covariate.labels=c("DV(t-1)","Change in lag","Lag(t-1)", "Change in Coin", "Coin(t-1)",
                              "Change in lead", "Lead(t-1)"), omit.stat = c("ser", "adj.rsq"), no.space=TRUE)
-
-
 
 stargazer(fit_tone1_lagcoin, fit_tone1_coinrelead, fit_tone1_lagcoinrelead, 
           title="Responsiveness of Media (tone) to Lagging, Coincident, and Leading Indicators",
@@ -630,13 +562,11 @@ stargazer(fit_tone1_lagcoin, fit_tone1_coinrelead, fit_tone1_lagcoinrelead,
           covariate.labels=c("DV(t-1)","Change in lag","Lag(t-1)", "Change in Coin", "Coin(t-1)",
                              "Change in lead", "Lead(t-1)"), omit.stat = c("ser", "adj.rsq"), no.space=TRUE)
 
-
 stargazer(fit_count_allecon, fit_tone1_allecon,
           title="Responsiveness of Media Coverage to Economic Evaluation and the Economy",
           dep.var.labels=c("Change in Count", "Change in Tone"), 
           covariate.labels=c("DV(t-1)","Change in Lead","Lead(t-1)", "Change in Retros Evaluation", "Retros(t-1)",
                              "Change in Prosp Evaluation", "Prosp(t-1)"), omit.stat = c("ser", "adj.rsq"), no.space=TRUE)
-
 
 stargazer(fit_retro_wo_int, fit_retro_wt_int,
           title="Responsiveness of Economic Evaluation to Media",
@@ -657,46 +587,33 @@ getwd()
 setwd("/Users/Rocio/Library/Mobile Documents/com~apple~CloudDocs/PS549_2015/final_paper/voting")
 
 
-income <- read.csv("household_income_us.csv", header = TRUE,  sep=",", colClasses="character")
-
-
 #install.packages("gsubfn")
 #library(gsubfn)
+#install.packages("dplyr")
+library(dplyr)
+library(plyr)
+library(ggplot2)
+
+income <- read.csv("household_income_us.csv", header = TRUE,  sep=",", colClasses="character")
 income[, c(1:12)] <- lapply(income[, c(1:12)], function(income){as.numeric(gsub(",", "", income))})
 party_2 <- read.csv("party_2.csv", header = TRUE, sep = ",")
 party_2 <- party_2[, -c(1:2, 4:7)]
-
 household <- cbind(income, party_2)
-
 household <- household[complete.cases(household), ]
-
-
-
-install.packages("dplyr")
-library(dplyr)
-library(plyr)
 
 
 #growth <- ddply(household, "party_2", transform, growth_20p = c(NA, exp(diff(log(lowest)))-1),
 #      growth_40p = c(NA, (exp(diff(log(second)))-1)*100), growth_60p = c(NA, (exp(diff(log(third)))-1)*100),
 #      growth_80p = c(NA, (exp(diff(log(fourth)))-1)*100), growth_95p = c(NA, (exp(diff(log(lowlim_t5)))-1)*100))
-
-
-
 #growth <- ddply(household, "party_2", summarise, n = length(growth_20p), mean = mean(growth_20p), 
 
 #sd = sd(growth_20p), se = sd/sqrt(n))
-        
 gro_dem <- filter(household, party_2 == "Democrat")
 gro_rep <- filter(household, party_2 == "Republican")
-
-
 by_party <- group_by(household, party_2)
 df_gro <- household %>% group_by(party_2) %>% summarise_each(funs(mean))
 df_gro[, c(1, 9:13)]
 df_gro[1, c(9:13)] - df_gro[2, c(9:13)]
-
-library(ggplot2)
 
 ave_dem <- as.numeric(df_gro[1, c(9:13)])
 ave_rep <- as.numeric(df_gro[2, c(9:13)])
@@ -707,7 +624,6 @@ percentile_name <- "Percentile"
 
 df_income <- data.frame(ave_dem, ave_rep, percentile)
 names(df_income) <- c(ave_dem_name, ave_rep_name, percentile_name)
-
 
 income_compar <- ggplot(data = df_income, aes(x = Percentile)) + geom_line(aes(y = Democrat, colour= "Democrat")) +
   geom_line(aes(y = Republican, colour = "Republican"))
@@ -722,8 +638,6 @@ f_dem <- ggplot(data = gro_dem, aes(x = year)) +
   annotate("rect", xmin = 1977, xmax = 1980, ymin = -Inf, ymax = Inf, alpha = .2) +
   annotate("rect", xmin = 1993, xmax = 2000, ymin = -Inf, ymax = Inf, alpha = .2) +
   annotate("rect", xmin = 2009, xmax = 2014, ymin = -Inf, ymax = Inf, alpha = .2)
-
-
 
 f_rep <- ggplot(data = gro_rep, aes(x = year)) + 
   geom_smooth(aes(y = growth_20p, colour = "20th percentile"), se = FALSE) + 
